@@ -1,0 +1,50 @@
+version: 2.1
+
+jobs:
+  test-node:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: |
+            npm install --save
+      - run:
+          name: Run unit tests
+          command: |
+            npm run test:unit
+      - run:
+          name: Message on failure
+          command: |
+            echo "failed to run command"
+          when: on_fail
+  build-node:
+    docker:
+      - image: cimg/node:lts
+    steps:
+      - checkout
+      - run:
+          name: Install npm dependencies
+          command: |
+            npm install --save
+      - run:
+          name: Build node project
+          command: |
+            npm run build
+      - run:
+          name: Message on failure
+          command: |
+            echo "failed to build node app"
+          when: on_fail
+      - store_artifacts:
+          path: ~/dist
+          destination: node-build
+
+workflows:
+  test-and-build:
+    jobs:
+      - test-node
+      - build-node:
+          requires:
+            - test-node
