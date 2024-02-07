@@ -38,7 +38,7 @@ jobs:
             echo "failed to build node app"
           when: on_fail
       - store_artifacts:
-          path: ~/dist
+          path: dist
           destination: node-build
 
 workflows:
